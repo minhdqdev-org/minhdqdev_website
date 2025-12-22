@@ -12,14 +12,14 @@ This repository hosts the source for [minhdq.dev](https://minhdq.dev), a persona
 
 ## 2. Tech stack and tooling
 
-| Layer | Notes |
-| --- | --- |
-| Framework | Next.js `^15.5.5` with React 19, App Router, dynamic metadata helpers (`app/seo.tsx`). |
-| Content pipeline | Contentlayer 2 + Pliny MDX plugins (`contentlayer.config.ts`), remark and rehype tooling, automated tag count and search index generation. |
-| UI | Tailwind CSS 4, Headless UI, Motion, lucide-react icons, custom components under `components/`. |
-| Data & metadata | `data/siteMetadata.js` centralizes analytics (Umami), comments (Disqus), search (kbar), social links, and theme options. |
-| Scripts | `npm run dev`, `npm run build` (runs `next build` then `scripts/postbuild.mjs` → RSS), `npm run start`, `npm run lint`. |
-| Optional deploy guides | See `faq/deploy-with-docker.md` for Docker output mode instructions. |
+| Layer                  | Notes                                                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Framework              | Next.js `^15.5.5` with React 19, App Router, dynamic metadata helpers (`app/seo.tsx`).                                                     |
+| Content pipeline       | Contentlayer 2 + Pliny MDX plugins (`contentlayer.config.ts`), remark and rehype tooling, automated tag count and search index generation. |
+| UI                     | Tailwind CSS 4, Headless UI, Motion, lucide-react icons, custom components under `components/`.                                            |
+| Data & metadata        | `data/siteMetadata.js` centralizes analytics (Umami), comments (Utterances), search (kbar), social links, and theme options.               |
+| Scripts                | `npm run dev`, `npm run build` (runs `next build` then `scripts/postbuild.mjs` → RSS), `npm run start`, `npm run lint`.                    |
+| Optional deploy guides | See `faq/deploy-with-docker.md` for Docker output mode instructions.                                                                       |
 
 ## 3. Repository map
 

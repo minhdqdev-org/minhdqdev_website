@@ -5,7 +5,7 @@ const siteMetadata = {
   headerTitle: 'minhdq.dev',
   description: 'Personal blog and portfolio by Dang Quang Minh.',
   language: 'en-us',
-  theme: 'system', // system, dark or light
+  theme: 'dark', // system, dark or light
   siteUrl: 'https://minhdq.dev',
   siteRepo: 'https://github.com/minhdqdev/minhdqdev_website',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
@@ -65,12 +65,12 @@ const siteMetadata = {
       repo: 'minhdqdev-org/minhdqdev_website', // GitHub repository where comments will be stored as issues
       issueTerm: 'pathname', // Maps comments to pages by pathname
       label: 'comment', // Label that will be assigned to issues created by utterances
-      theme: 'github-light', // Theme for light mode
+      theme: 'github-dark',
       darkTheme: 'github-dark', // Theme for dark mode
     },
-    disqusConfig: {
-      shortname: 'minhdqdev',
-    },
+    // disqusConfig: {
+    //   shortname: 'minhdqdev',
+    // },
   },
   search: {
     provider: 'kbar', // kbar or algolia
