@@ -60,6 +60,14 @@ const siteMetadata = {
     // Select a provider and use the environment variables associated to it
     // https://vercel.com/docs/environment-variables
     provider: 'utterances', // supported providers: giscus, utterances, disqus
+    utterancesConfig: {
+      // Visit https://utteranc.es/ to configure
+      repo: 'minhdqdev-org/minhdqdev_website', // GitHub repository where comments will be stored as issues
+      issueTerm: 'pathname', // Maps comments to pages by pathname
+      label: 'comment', // Label that will be assigned to issues created by utterances
+      theme: 'github-light', // Theme for light mode
+      darkTheme: 'github-dark', // Theme for dark mode
+    },
     disqusConfig: {
       shortname: 'minhdqdev',
     },
