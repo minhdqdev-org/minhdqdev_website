@@ -5,7 +5,7 @@ This repository hosts the source for [minhdq.dev](https://minhdq.dev), a persona
 ## 1. Product snapshot
 
 - **Purpose** — Publish technical blog posts, highlight selected work, and provide contact points for Dang Quang Minh.
-- **Key user flows** — Read featured blog posts on the landing page (`app/Main.tsx`), browse `/blog`, filter via `/tags` sidebar, review `/projects`, and reach out through `/wandering`.
+- **Key user flows** — Read featured blog posts on the landing page (`app/Main.tsx`), browse `/blog`, filter via `/tags` sidebar, review `/projects`.
 - **Rendering model** — Next.js `app` directory with React Server Components. Only interactive areas opt into `'use client'` (e.g., theme switcher, search, old homepage).
 - **Content source** — MDX files under `data/blog` and author profiles under `data/authors`. Contentlayer turns them into typed `allBlogs` and `allAuthors` collections.
 - **Styling system** — Tailwind CSS 4 with the `css/tailwind.css` theme file defining custom palettes, variants, and prose tweaks.
@@ -23,7 +23,7 @@ This repository hosts the source for [minhdq.dev](https://minhdq.dev), a persona
 
 ## 3. Repository map
 
-- `app/` — Route handlers, layouts, metadata routes (`robots.ts`, `sitemap.ts`), newsletter API proxy, blog archive, dynamic tag routes, standalone pages (`projects`, `wandering`, `about`), and the experimental `old_home` hero.
+- `app/` — Route handlers, layouts, metadata routes (`robots.ts`, `sitemap.ts`), newsletter API proxy, blog archive, dynamic tag routes, standalone pages (`projects`, `about`), and the experimental `old_home` hero.
 - `components/` — Shared UI (Link, Tag, Header, Footer, MDXComponents, SearchButton, ThemeSwitch, ScrollTopAndComment, SkillPill, etc.). `components/index.ts` exposes the CTA-style pieces reused by `app/old_home`.
 - `layouts/` — Blog-specific shells (`PostLayout`, `PostSimple`, `PostBanner`) plus listing layout with tag sidebar (`ListLayoutWithTags.tsx`).
 - `data/` — **Only source of truth for site content.** Includes `blog/` MDX posts, `authors/`, `featured.ts` data for the animated home, nav links, metadata, social logo SVG, and bibliography references.
@@ -99,7 +99,7 @@ This repository hosts the source for [minhdq.dev](https://minhdq.dev), a persona
 - [ ] `npm run build` succeeds locally (guarantees Contentlayer, tag counts, RSS, and search documents are fresh).
 - [ ] No manual edits to `app/tag-data.json`; verify Git diff only includes source files.
 - [ ] New or edited posts include required front matter plus references per the writing guide.
-- [ ] `data/siteMetadata.js` values reflect any new social or contact links added to pages like `/wandering`.
+- [ ] `data/siteMetadata.js` values reflect any new social or contact links.
 
 ## 8. Additional documents
 
