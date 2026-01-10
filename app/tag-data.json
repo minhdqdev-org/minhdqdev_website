@@ -1,13 +1,15 @@
 {
-  "search": 1,
-  "backend": 2,
-  "architecture": 2,
-  "databases": 1,
+  "personal": 1,
   "redis": 1,
   "caching": 1,
+  "backend": 2,
   "performance": 2,
   "sftp": 1,
   "java": 1,
   "integration": 1,
-  "personal": 1
+  "architecture": 2,
+  "search": 1,
+  "databases": 1,
+  "research": 1,
+  "obsidian": 1
 }

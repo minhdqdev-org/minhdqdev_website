@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 
 export function FooterBottom() {
-  let pathname = usePathname()
-  let isHomePage = pathname === '/'
+  // let pathname = usePathname()
+  // let isHomePage = pathname === '/'
 
   return (
     <div
@@ -16,7 +16,7 @@ export function FooterBottom() {
         'border-t border-gray-200 dark:border-gray-700',
       ])}
     >
-      {isHomePage ? (
+      {/* {isHomePage ? (
         <LastCommit />
       ) : (
         <SpotifyNowPlaying
@@ -24,12 +24,12 @@ export function FooterBottom() {
           songEffect="underline"
           showCover
         />
-      )}
-      <Link href={SITE_METADATA.siteRepo}>
+      )} */}
+      {/* <Link href={SITE_METADATA.siteRepo}>
         <span data-umami-event="made-in-vietnam">
           <MadeInVietNam />
         </span>
-      </Link>
+      </Link> */}
     </div>
   )
 }
