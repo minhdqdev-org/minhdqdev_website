@@ -1,0 +1,81 @@
+---
+title: 'Test Diagrams - Mermaid and PlantUML'
+date: '2026-01-15'
+tags: ['test', 'diagrams']
+draft: true
+summary: 'Testing Mermaid and PlantUML diagram rendering'
+---
+
+# Testing Diagram Support
+
+This post tests both Mermaid and PlantUML diagram rendering.
+
+## Mermaid Diagram
+
+Here's a simple flowchart using Mermaid:
+
+```mermaid
+graph TD
+    A[Start] --> B{Is it working?}
+    B -->|Yes| C[Great!]
+    B -->|No| D[Debug]
+    D --> B
+    C --> E[End]
+```
+
+## Another Mermaid Example - Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser
+    participant Server
+    User->>Browser: Click button
+    Browser->>Server: HTTP Request
+    Server-->>Browser: HTTP Response
+    Browser-->>User: Display result
+```
+
+## PlantUML Diagram
+
+Here's a simple class diagram using PlantUML:
+
+```plantuml
+@startuml
+class User {
+  +String name
+  +String email
+  +login()
+  +logout()
+}
+
+class Post {
+  +String title
+  +String content
+  +Date createdAt
+  +publish()
+}
+
+User "1" -- "*" Post : creates
+@enduml
+```
+
+## PlantUML Sequence Diagram
+
+```plantuml
+@startuml
+actor User
+participant "Web App" as App
+participant "API Server" as API
+database "Database" as DB
+
+User -> App: Open page
+App -> API: Request data
+API -> DB: Query
+DB --> API: Results
+API --> App: JSON response
+App --> User: Display page
+@enduml
+```
+
+Both diagram types should render properly on the website!

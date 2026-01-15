@@ -173,3 +173,20 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* Diagram styles */
+.mermaid {
+  @apply flex justify-center items-center overflow-x-auto;
+}
+
+.mermaid svg {
+  @apply max-w-full h-auto;
+}
+
+.plantuml-diagram {
+  @apply overflow-x-auto;
+}
+
+.plantuml-diagram img {
+  @apply dark:brightness-90;
+}
