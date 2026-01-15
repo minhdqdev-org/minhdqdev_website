@@ -1,6 +1,6 @@
 ---
 title: Test Sync Obsidian To Website
-date: '2026-01-14'
+date: '2026-01-15'
 tags:
 - research
 - obsidian
