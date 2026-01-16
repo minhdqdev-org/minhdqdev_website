@@ -12,19 +12,30 @@ function escapeYamlString(str: string | undefined): string {
   // Check if string needs quoting:
   // - Contains special YAML characters
   // - Starts with characters that could be interpreted as YAML syntax
-  // - Looks like a boolean, null, or number
+  // - Looks like a boolean, null, or number (but not strings like "version 2.0")
   const needsQuoting =
-    /[:#@&*!|>%{}\[\]`"'\n\r]/.test(value) ||
+    /[:#@&*!|>%{}[\]`"'\n\r]/.test(value) ||
     /^[-?]/.test(value) ||
     /^(true|false|null|yes|no|on|off)$/i.test(value) ||
-    /^\d/.test(value)
+    /^-?\d+(\.\d+)?([eE][+-]?\d+)?$/.test(value) || // Matches actual numbers including scientific notation
+    /^0x[\da-f]+$/i.test(value) // Matches hex numbers
 
   if (needsQuoting) {
-    // Escape backslashes first, then quotes
-    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')}"`
+    // Escape special characters for YAML double-quoted strings
+    return `"${escapeYamlSpecialChars(value)}"`
   }
 
   return value
+}
+
+// Helper function to escape special characters in YAML double-quoted strings
+function escapeYamlSpecialChars(str: string): string {
+  return str
+    .replace(/\\/g, '\\\\') // Backslash must be first
+    .replace(/"/g, '\\"') // Escape quotes
+    .replace(/\n/g, '\\n') // Escape newlines
+    .replace(/\r/g, '\\r') // Escape carriage returns
+    .replace(/\t/g, '\\t') // Escape tabs
 }
 
 // Helper function to build frontmatter safely

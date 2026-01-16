@@ -34,13 +34,16 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 }
 
 export function generateBreadcrumbSchema(items: BreadcrumbItem[], siteUrl: string) {
-  // Validate siteUrl format
+  // Validate siteUrl format to ensure well-formed schema output
+  // Falls back to relative URLs if siteUrl is malformed
   let validatedUrl: string
   try {
     const url = new URL(siteUrl)
     validatedUrl = url.origin
-  } catch {
-    // Fallback to empty string if URL is invalid
+  } catch (error) {
+    // Invalid URL provided - fall back to relative URLs
+    // This can happen during development or if siteMetadata is misconfigured
+    console.warn('Invalid siteUrl provided to breadcrumb schema:', siteUrl, error)
     validatedUrl = ''
   }
 
