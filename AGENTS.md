@@ -108,4 +108,53 @@ This repository hosts the source for [minhdq.dev](https://minhdq.dev), a persona
 - Adding MDX components — `faq/custom-mdx-component.md`
 - Deploying with Docker — `faq/deploy-with-docker.md`
 
+## 9. AI-Friendly Features
+
+This blog has been optimized for AI agent access with the following features:
+
+### 9.1 Structured Data
+- **BlogPosting schema.org markup**: Every blog post includes comprehensive JSON-LD with headline, author, dates, keywords, mainEntityOfPage, and publisher information
+- **BreadcrumbList schema**: Navigation context via structured breadcrumb data
+- All schema embedded in `<head>` as JSON-LD for easy parsing
+
+### 9.2 Markdown Download
+- **Download Markdown button**: Available on every blog post
+- **API endpoint**: `/api/blog/{slug}/markdown` serves raw markdown with frontmatter
+- **Content-Type**: Served as `text/markdown` for proper MIME type handling
+- **rel="alternate" link**: Discoverable via `<link rel="alternate" type="text/markdown">` in page metadata
+- **Frontmatter included**: Full metadata (title, date, tags, authors, summary) in YAML format
+
+### 9.3 Enhanced RSS Feeds
+- **Full content**: RSS feeds include complete post content via `<content:encoded>` element
+- **Main feed**: `/feed.xml` with all published posts
+- **Tag-specific feeds**: `/tags/{tag}/feed.xml` for filtered content
+- **Metadata**: Each item includes title, link, description, pubDate, author, and categories (tags)
+
+### 9.4 Documentation Pages
+- **AI Agents page**: `/ai-agents` documents all agent-friendly features, endpoints, and usage guidelines
+- **HTML Sitemap**: `/sitemap-page` provides hierarchical view of all content
+- **XML Sitemap**: `/sitemap.xml` for programmatic discovery
+- **Search Index**: `/search.json` in kbar format for client-side search
+
+### 9.5 Semantic HTML
+- Proper use of `<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<footer>`
+- Navigation wrapped in `<nav aria-label="Main navigation">`
+- Breadcrumbs use `<nav aria-label="Breadcrumb">` with proper ARIA attributes
+- Exactly one `<h1>` per page with logical heading hierarchy
+- Accessible and screen-reader friendly
+
+### 9.6 Content Discoverability
+- **Consistent URL patterns**: `/blog/{slug}` for all posts
+- **Tag archives**: `/tags/{tag}` with RSS feeds
+- **Clear link text**: Descriptive labels like "Download Markdown" instead of generic "Download"
+- **robots.txt**: Publicly accessible for crawler directives
+- **OpenGraph & Twitter Card**: Rich social metadata on all pages
+
+### 9.7 Agent Usage Guidelines
+Documented at `/ai-agents` page:
+- Preferred access methods (RSS, markdown download, HTML)
+- Rate limiting recommendations (1-2 second delays)
+- Example curl commands for common tasks
+- Contact information for agent-related questions
+
 Use this document as the entry point whenever you spin up new agents (coding, content, ops) so they can work autonomously without re-auditing the entire repository.
