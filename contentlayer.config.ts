@@ -124,6 +124,16 @@ export const Blog = defineDocumentType(() => ({
         description: doc.summary,
         image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
         url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+        keywords: doc.tags && Array.isArray(doc.tags) ? doc.tags.join(', ') : '',
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+        },
+        publisher: {
+          '@type': 'Person',
+          name: siteMetadata.author,
+          url: siteMetadata.siteUrl,
+        },
       }),
     },
   },
