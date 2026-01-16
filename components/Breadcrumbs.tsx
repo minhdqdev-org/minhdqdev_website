@@ -34,6 +34,16 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
 }
 
 export function generateBreadcrumbSchema(items: BreadcrumbItem[], siteUrl: string) {
+  // Validate siteUrl format
+  let validatedUrl: string
+  try {
+    const url = new URL(siteUrl)
+    validatedUrl = url.origin
+  } catch {
+    // Fallback to empty string if URL is invalid
+    validatedUrl = ''
+  }
+
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -41,7 +51,7 @@ export function generateBreadcrumbSchema(items: BreadcrumbItem[], siteUrl: strin
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: `${siteUrl}${item.href}`,
+      item: validatedUrl ? `${validatedUrl}${item.href}` : item.href,
     })),
   }
 }

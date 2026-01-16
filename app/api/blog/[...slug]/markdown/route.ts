@@ -5,11 +5,26 @@ import { NextResponse } from 'next/server'
 // Helper function to safely format YAML string values
 function escapeYamlString(str: string | undefined): string {
   if (!str) return ''
-  // If string contains special YAML characters, wrap in quotes and escape quotes
-  if (/[:#@&*!|>%{}\[\]`"']/.test(str) || str.includes('\n')) {
-    return `"${str.replace(/"/g, '\\"')}"`
+
+  // Convert to string in case it's not already
+  const value = String(str)
+
+  // Check if string needs quoting:
+  // - Contains special YAML characters
+  // - Starts with characters that could be interpreted as YAML syntax
+  // - Looks like a boolean, null, or number
+  const needsQuoting =
+    /[:#@&*!|>%{}\[\]`"'\n\r]/.test(value) ||
+    /^[-?]/.test(value) ||
+    /^(true|false|null|yes|no|on|off)$/i.test(value) ||
+    /^\d/.test(value)
+
+  if (needsQuoting) {
+    // Escape backslashes first, then quotes
+    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r')}"`
   }
-  return str
+
+  return value
 }
 
 // Helper function to build frontmatter safely
@@ -74,7 +89,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   return new NextResponse(markdown, {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${slug.replace(/\//g, '-')}.md"`,
+      // Sanitize filename: remove/replace special characters that could cause issues
+      'Content-Disposition': `attachment; filename="${slug.replace(/[^a-zA-Z0-9-_]/g, '-')}.md"`,
     },
   })
 }
