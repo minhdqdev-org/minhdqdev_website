@@ -2,6 +2,57 @@ import { allBlogs } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
 import { NextResponse } from 'next/server'
 
+// Helper function to safely format YAML string values
+function escapeYamlString(str: string | undefined): string {
+  if (!str) return ''
+  // If string contains special YAML characters, wrap in quotes and escape quotes
+  if (/[:#@&*!|>%{}\[\]`"']/.test(str) || str.includes('\n')) {
+    return `"${str.replace(/"/g, '\\"')}"`
+  }
+  return str
+}
+
+// Helper function to build frontmatter safely
+function buildFrontmatter(post: (typeof allBlogs)[0]): string {
+  const parts: string[] = ['---']
+
+  parts.push(`title: ${escapeYamlString(post.title)}`)
+  parts.push(`date: ${post.date}`)
+
+  if (post.tags && post.tags.length > 0) {
+    parts.push('tags:')
+    post.tags.forEach((tag) => {
+      parts.push(`  - ${escapeYamlString(tag)}`)
+    })
+  }
+
+  if (post.draft) {
+    parts.push('draft: true')
+  }
+
+  if (post.summary) {
+    parts.push(`summary: ${escapeYamlString(post.summary)}`)
+  }
+
+  if (post.authors && post.authors.length > 0) {
+    parts.push('authors:')
+    post.authors.forEach((author) => {
+      parts.push(`  - ${escapeYamlString(author)}`)
+    })
+  }
+
+  if (post.lastmod) {
+    parts.push(`lastmod: ${post.lastmod}`)
+  }
+
+  if (post.canonicalUrl) {
+    parts.push(`canonicalUrl: ${post.canonicalUrl}`)
+  }
+
+  parts.push('---')
+  return parts.join('\n')
+}
+
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string[] }> }) {
   const resolvedParams = await params
   const slug = decodeURI(resolvedParams.slug.join('/'))
@@ -13,17 +64,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     return notFound()
   }
 
-  // Generate frontmatter
-  const frontmatter = `---
-title: ${post.title}
-date: ${post.date}
-${post.tags && post.tags.length > 0 ? `tags:\n${post.tags.map((tag) => `  - ${tag}`).join('\n')}` : ''}
-${post.draft ? 'draft: true' : ''}
-${post.summary ? `summary: ${post.summary}` : ''}
-${post.authors && post.authors.length > 0 ? `authors:\n${post.authors.map((author) => `  - ${author}`).join('\n')}` : ''}
-${post.lastmod ? `lastmod: ${post.lastmod}` : ''}
-${post.canonicalUrl ? `canonicalUrl: ${post.canonicalUrl}` : ''}
----`
+  // Generate frontmatter safely
+  const frontmatter = buildFrontmatter(post)
 
   // Combine frontmatter with markdown content
   const markdown = `${frontmatter}\n\n${post.body.raw}`

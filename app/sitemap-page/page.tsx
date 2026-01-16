@@ -26,14 +26,19 @@ export default function SitemapPage() {
     {} as Record<number, typeof posts>
   )
 
-  // Get all unique tags
-  const tags = new Set<string>()
+  // Get all unique tags with pre-computed slugs
+  const tagSet = new Set<string>()
   posts.forEach((post) => {
     if (post.tags) {
-      post.tags.forEach((tag) => tags.add(tag))
+      post.tags.forEach((tag) => tagSet.add(tag))
     }
   })
-  const sortedTags = Array.from(tags).sort()
+  const sortedTags = Array.from(tagSet)
+    .sort()
+    .map((tag) => ({
+      name: tag,
+      slug: slug(tag),
+    }))
 
   return (
     <>
@@ -148,11 +153,11 @@ export default function SitemapPage() {
               <div className="flex flex-wrap gap-3">
                 {sortedTags.map((tag) => (
                   <Link
-                    key={tag}
-                    href={`/tags/${slug(tag)}`}
+                    key={tag.slug}
+                    href={`/tags/${tag.slug}`}
                     className="text-primary-500 rounded-lg bg-gray-100 px-3 py-1 text-sm font-medium hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
                   >
-                    {tag}
+                    {tag.name}
                   </Link>
                 ))}
               </div>
