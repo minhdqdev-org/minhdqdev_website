@@ -8,11 +8,10 @@ import { formatDate } from 'pliny/utils/formatDate'
 import NewsletterForm from 'pliny/ui/NewsletterForm'
 import { TypedBios } from '@/components/TypedBios'
 import SectionContainer from '@/components/SectionContainer'
-import HomeHeader from '@/components/HomeHeader'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Footer from '@/components/Footer'
 import HeroImage from '@/components/HeroImage'
-
+import HomeHeader from '@/components/HomeHeader'
 const MAX_DISPLAY = 5
 
 export default function Home({ posts }) {

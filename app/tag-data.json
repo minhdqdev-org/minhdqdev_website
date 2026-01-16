@@ -10,14 +10,12 @@
   "backend": 2,
   "performance": 2,
   "sftp": 1,
-  "java": 4,
+  "java": 2,
   "integration": 1,
   "architecture": 2,
-  "research": 5,
   "search": 1,
   "databases": 1,
-  "test": 1,
-  "diagrams": 1,
+  "research": 3,
   "obsidian": 2,
   "post": 1
 }
