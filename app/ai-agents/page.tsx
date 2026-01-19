@@ -33,7 +33,7 @@ export default function AIAgentsPage() {
             </li>
             <li>
               <strong>Markdown</strong>: Raw markdown with frontmatter at{' '}
-              <code>/api/blog/&#123;slug&#125;/markdown</code>
+              <code>/api/blog/markdown/&#123;slug&#125;</code>
             </li>
             <li>
               <strong>RSS</strong>: Full content feed at <Link href="/feed.xml">/feed.xml</Link>
@@ -173,7 +173,7 @@ export default function AIAgentsPage() {
           <h3>Fetching a Post as Markdown</h3>
           <pre>
             <code>{`curl -H "Accept: text/markdown" \\
-  ${siteMetadata.siteUrl}/api/blog/all-you-need-to-know-about-kafka/markdown`}</code>
+  ${siteMetadata.siteUrl}/api/blog/markdown/all-you-need-to-know-about-kafka`}</code>
           </pre>
 
           <h3>Accessing the RSS Feed</h3>

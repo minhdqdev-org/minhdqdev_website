@@ -111,7 +111,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <Link href={editUrl(filePath)}>View on GitHub</Link>
                 {` • `}
                 <Link
-                  href={`/api/blog/${slug}/markdown`}
+                  href={`/api/blog/markdown/${slug}`}
                   className="inline-flex items-center gap-1"
                 >
                   Download Markdown

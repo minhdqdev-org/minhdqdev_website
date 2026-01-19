@@ -73,7 +73,7 @@ export async function generateMetadata(props: {
     },
     alternates: {
       types: {
-        'text/markdown': `/api/blog/${slug}/markdown`,
+        'text/markdown': `/api/blog/markdown/${slug}`,
       },
     },
   }
