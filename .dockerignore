@@ -11,3 +11,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env*.local
+# Force rebuild Mon Jan 19 10:34:12 AM +07 2026
