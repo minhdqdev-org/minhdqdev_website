@@ -1,6 +1,6 @@
 ---
 title: Review code like a Java Senior Developer
-date: '2026-01-20'
+date: '2026-01-21'
 tags:
 - research
 - java
