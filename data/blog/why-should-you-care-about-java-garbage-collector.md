@@ -1,6 +1,6 @@
 ---
 title: Why should you care about Java Garbage Collector?
-date: '2026-01-23'
+date: '2026-01-24'
 tags:
 - post
 - research
