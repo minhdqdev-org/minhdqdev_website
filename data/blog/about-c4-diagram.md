@@ -1,6 +1,6 @@
 ---
 title: About C4 diagram
-date: '2026-01-24'
+date: '2026-01-25'
 tags:
 - research
 draft: true

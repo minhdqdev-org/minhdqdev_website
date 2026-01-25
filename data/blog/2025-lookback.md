@@ -1,6 +1,6 @@
 ---
 title: 2025 - Tổng kết một năm vươn mình cùng đất nước
-date: '2026-01-24'
+date: '2026-01-25'
 tags:
 - lookback
 - note
