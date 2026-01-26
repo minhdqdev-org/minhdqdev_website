@@ -1,6 +1,6 @@
 ---
 title: All you need to know about Apache Kafka (in my opinion)
-date: '2026-01-25'
+date: '2026-01-26'
 tags:
 - system-design
 - data-engineering
