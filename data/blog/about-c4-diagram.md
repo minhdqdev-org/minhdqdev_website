@@ -52,7 +52,7 @@ Xài draw.io
 **Question:** Mobile app scan a fixed QR code at store. Then that QR code is a component or a container?
 ?
 Short answer, a fixed QR code is neither a component nor a container. Since the QR code is just passive data (like a piece of paper), it belongs in the relationship, not as a box.
-<!--SR:!2026-01-18,3,250-->
+
 
 ```
 Customer --(Scans store QR code using)--> Mobile App
@@ -65,7 +65,7 @@ If that QR code is pasted on a specific "Smart Kiosk" or a "POS Terminal" that y
 **Question:** Suppose we have a Django API server, it has an integrated admin console. Should we draw a single container or two separate containers?
 ?
 The recommendation is to draw one container.
-<!--SR:!2026-01-18,3,250-->
+
 
 Since it is a standard Django app, the API and the Admin Console are likely part of the **same codebase** and run in the **same process** (e.g., one Gunicorn/uWSGI instance).
 

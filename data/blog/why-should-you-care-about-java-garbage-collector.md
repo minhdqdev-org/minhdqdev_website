@@ -112,8 +112,8 @@ resources:
 Vấn đề "2 ông gác cổng":
 Nếu set k8s limit mà không set cấu hình JVM limit thì JVM có thể hiểu nhầm là nó đang chạy trên máy chủ vật lý (vd: 32GB RAM) và cố gắng chiếm nhiều hơn 1Gi
 
-- Kịch bản 1: JVM limit <= k8s limit -> java.lang.OutOfMemoryError, có log lỗi Java rõ ràng, dễ trace
-- Kịch bản 2: JVM limit > k8s limit -> lỗi k8s OOMKilled, k8s sẽ kill -9 pod, và ko có dòng log lỗi nào.
+- Kịch bản 1: JVM limit &lt;= k8s limit -> java.lang.OutOfMemoryError, có log lỗi Java rõ ràng, dễ trace
+- Kịch bản 2: JVM limit &gt; k8s limit -> lỗi k8s OOMKilled, k8s sẽ kill -9 pod, và ko có dòng log lỗi nào.
 
 Best practice: Thay vì hardcode cấu hình JVM limit thì set heap size bằng 75% k8s limit. (áp dụng cho Java 10+)
 - 25% còn lại dành cho các phần khác (metaspace, thread stack, overhead...)
