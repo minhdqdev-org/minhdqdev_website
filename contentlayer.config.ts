@@ -15,6 +15,7 @@ import {
   extractTocHeadings,
 } from 'pliny/mdx-plugins/index.js'
 import { remarkDiagrams } from './lib/remark-diagrams'
+import { remarkMdxSanitize } from './lib/remark-mdx-sanitize.mjs'
 // Rehype packages
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -164,6 +165,7 @@ export default makeSource({
   mdx: {
     cwd: process.cwd(),
     remarkPlugins: [
+      remarkMdxSanitize,
       remarkExtractFrontmatter,
       remarkGfm,
       remarkCodeTitles,
