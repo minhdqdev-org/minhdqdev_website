@@ -9,6 +9,7 @@ import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
 const discussUrl = (path) =>
@@ -33,12 +34,19 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
   const { filePath, path, slug, date, title, tags } = content
   const basePath = path.split('/')[0]
 
+  const breadcrumbItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Blog', href: '/blog' },
+    { name: title, href: `/${path}` },
+  ]
+
   return (
     <SectionContainer>
       <ScrollTopAndComment />
       <article>
         <div className="xl:divide-y xl:divide-gray-200 xl:dark:divide-gray-700">
           <header className="pt-6 xl:pb-6">
+            <Breadcrumbs items={breadcrumbItems} />
             <div className="space-y-1 text-center">
               <dl className="space-y-10">
                 <div>
@@ -101,6 +109,13 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </Link>
                 {` • `}
                 <Link href={editUrl(filePath)}>View on GitHub</Link>
+                {` • `}
+                <Link
+                  href={`/api/blog/markdown/${slug}`}
+                  className="inline-flex items-center gap-1"
+                >
+                  Download Markdown
+                </Link>
               </div>
               {siteMetadata.comments && (
                 <div

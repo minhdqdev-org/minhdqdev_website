@@ -22,6 +22,8 @@ jobs:
     runs-on: [self-hosted, minhdqdev-org, manual]
     permissions:
       contents: read
+      # Allow pushing to other repositories via GitHub token
+      # Note: This requires ARGOCD_CONFIG_REPO_TOKEN secret with repo scope
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -92,6 +94,49 @@ jobs:
           cache-from: type=registry,ref=${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:develop
           cache-to: type=inline
 
+      - name: Update ArgoCD kustomization
+        env:
+          GH_TOKEN: ${{ secrets.ARGOCD_CONFIG_REPO_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          # Clone ArgoCD config repo
+          git clone https://x-access-token:${GH_TOKEN}@github.com/minhdqdev-org/minhdqdev-argocd-config.git /tmp/argocd-config
+          cd /tmp/argocd-config
+          
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Update kustomization.yaml with new image tag
+          KUSTOMIZATION_FILE="environments/uat/minhdqdev-website/kustomization.yaml"
+          
+          if [ ! -f "$KUSTOMIZATION_FILE" ]; then
+            echo "ERROR: $KUSTOMIZATION_FILE not found" >&2
+            exit 1
+          fi
+          
+          # Update the image tag using yq or sed
+          if command -v yq &> /dev/null; then
+            yq eval ".images[0].newTag = \"develop-${{ env.BUILD_NUMBER }}\"" -i "$KUSTOMIZATION_FILE"
+          else
+            sed -i "s|newTag:.*|newTag: develop-${{ env.BUILD_NUMBER }}|" "$KUSTOMIZATION_FILE"
+          fi
+          
+          # Commit and push if there are changes
+          if git diff --quiet "$KUSTOMIZATION_FILE"; then
+            echo "No changes to commit"
+          else
+            git add "$KUSTOMIZATION_FILE"
+            git commit -m "chore: update minhdqdev-website UAT to develop-${{ env.BUILD_NUMBER }}"
+            git push origin main
+            echo "Updated $KUSTOMIZATION_FILE with tag develop-${{ env.BUILD_NUMBER }}"
+          fi
+          
+          # Cleanup
+          cd /
+          rm -rf /tmp/argocd-config
+
       - name: Image build summary
         run: |
           echo "### Docker Image Built and Pushed :rocket:" >> $GITHUB_STEP_SUMMARY
@@ -103,3 +148,5 @@ jobs:
           echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:develop\`" >> $GITHUB_STEP_SUMMARY
           echo "- \`${{ env.HARBOR_REGISTRY }}/${{ env.HARBOR_PROJECT }}/${{ env.IMAGE_NAME }}:develop-${{ env.BUILD_NUMBER }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**ArgoCD:** Updated environments/uat/minhdqdev-website to develop-${{ env.BUILD_NUMBER }}" >> $GITHUB_STEP_SUMMARY

@@ -14,6 +14,7 @@ import {
   remarkImgToJsx,
   extractTocHeadings,
 } from 'pliny/mdx-plugins/index.js'
+import { remarkDiagrams } from './lib/remark-diagrams'
 // Rehype packages
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -123,6 +124,16 @@ export const Blog = defineDocumentType(() => ({
         description: doc.summary,
         image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
         url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+        keywords: doc.tags && Array.isArray(doc.tags) ? doc.tags.join(', ') : '',
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+        },
+        publisher: {
+          '@type': 'Person',
+          name: siteMetadata.author,
+          url: siteMetadata.siteUrl,
+        },
       }),
     },
   },
@@ -159,6 +170,7 @@ export default makeSource({
       remarkMath,
       remarkImgToJsx,
       remarkAlert,
+      remarkDiagrams,
     ],
     rehypePlugins: [
       rehypeSlug,

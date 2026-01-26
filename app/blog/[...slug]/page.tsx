@@ -13,6 +13,7 @@ import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
+import { generateBreadcrumbSchema } from '@/components/Breadcrumbs'
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -70,6 +71,11 @@ export async function generateMetadata(props: {
       description: post.summary,
       images: imageList,
     },
+    alternates: {
+      types: {
+        'text/markdown': `/api/blog/markdown/${slug}`,
+      },
+    },
   }
 }
 
@@ -106,11 +112,22 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
 
   const Layout = layouts[post.layout || defaultLayout]
 
+  const breadcrumbItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Blog', href: '/blog' },
+    { name: post.title, href: `/${post.path}` },
+  ]
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems, siteMetadata.siteUrl)
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
