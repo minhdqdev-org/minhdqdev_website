@@ -3,6 +3,7 @@
   "note": 1,
   "yearly": 1,
   "personal": 1,
+  "research": 4,
   "system-design": 1,
   "data-engineering": 1,
   "redis": 1,
@@ -10,12 +11,11 @@
   "backend": 2,
   "performance": 2,
   "sftp": 1,
-  "java": 2,
+  "java": 3,
   "integration": 1,
   "architecture": 2,
   "search": 1,
   "databases": 1,
-  "research": 2,
   "obsidian": 1,
   "post": 1
 }

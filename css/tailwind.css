@@ -190,3 +190,24 @@ input:-webkit-autofill:focus {
 .plantuml-diagram img {
   @apply dark:brightness-90;
 }
+
+/* Utterances comments styling */
+.utterances {
+  position: relative !important;
+  max-width: 100% !important;
+}
+
+.utterances-frame {
+  position: relative !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  transform: none !important;
+}
+
+/* Hide duplicate utterances that may appear due to React StrictMode */
+#comments-container .utterances:nth-child(n + 2) {
+  display: none !important;
+}
