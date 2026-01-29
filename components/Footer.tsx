@@ -52,7 +52,7 @@ export default function Footer() {
           <div className="pt-4">
             <div className="flex gap-8 py-1.5 md:gap-20">
               <div className="flex items-center">
-                <Signature className="h-20 w-32 md:w-40" />
+                {/* <Signature className="h-20 w-32 md:w-40" /> */}
               </div>
               {/* <FooterMeta /> */}
             </div>
