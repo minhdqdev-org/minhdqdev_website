@@ -39,7 +39,7 @@ const HeroImage = () => {
       }}
     >
       <div
-        className="relative overflow-hidden transition-all duration-300 ease-out rounded-2xl"
+        className="relative overflow-hidden rounded-2xl transition-all duration-300 ease-out"
         style={{
           transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale(${rotate.x !== 0 || rotate.y !== 0 ? 1.05 : 1})`,
           boxShadow:
@@ -49,7 +49,7 @@ const HeroImage = () => {
         }}
       >
         <Image
-          src="/static/images/homepage_image_2.webp"
+          src="/static/images/homepage_image.webp"
           alt="Homepage hero"
           width={600}
           height={600}
@@ -57,8 +57,8 @@ const HeroImage = () => {
           priority
         />
         {/* Shine effect on hover */}
-        <div 
-          className="absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-20"
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-20"
           style={{
             background: `radial-gradient(circle at ${(rotate.y + 10) * 5}% ${(10 - rotate.x) * 5}%, white, transparent)`,
           }}

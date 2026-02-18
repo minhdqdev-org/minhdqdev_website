@@ -15,9 +15,9 @@ const HomeHeader = () => {
           <header className="flex items-center justify-between pt-8 pb-5">
             <Link href="/" aria-label={siteMetadata.headerTitle}>
               <div className="flex items-center justify-between">
-                <div className="mr-3">
+                {/* <div className="mr-3">
                   <Logo />
-                </div>
+                </div> */}
                 {typeof siteMetadata.headerTitle === 'string' ? (
                   <div className="hidden h-6 text-2xl font-semibold sm:block">
                     {siteMetadata.headerTitle}
@@ -48,7 +48,7 @@ const HomeHeader = () => {
           </header>
         </SectionContainer>
       </div>
-      <div className="absolute top-full left-0 right-0 h-12 bg-gradient-to-b from-white to-transparent dark:from-gray-950" />
+      <div className="absolute top-full right-0 left-0 h-12 bg-gradient-to-b from-white to-transparent dark:from-gray-950" />
     </div>
   )
 }
