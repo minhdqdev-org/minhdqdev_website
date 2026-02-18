@@ -12,7 +12,10 @@ import { SearchProvider, SearchConfig } from 'pliny/search'
 import Footer from '@/components/Footer'
 import HeroImage from '@/components/HeroImage'
 import HomeHeader from '@/components/HomeHeader'
+import { projects } from '@/data/featured'
+
 const MAX_DISPLAY = 5
+const FEATURED_PROJECTS = projects.slice(0, 3)
 
 export default function Home({ posts }) {
   return (
@@ -61,6 +64,45 @@ export default function Home({ posts }) {
             <div className="absolute right-0 bottom-0 left-0 h-32 bg-gradient-to-t from-white to-transparent dark:from-gray-950" />
           </div>
         </div>
+        {/* Featured Work */}
+        <SectionContainer>
+          <div className="space-y-2 pt-10 pb-6 md:space-y-5">
+            <h2 className="text-3xl leading-9 font-extrabold tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-4xl md:leading-14 dark:text-gray-100">
+              Featured Work
+            </h2>
+          </div>
+          <div className="grid gap-4 pb-10 md:grid-cols-3">
+            {FEATURED_PROJECTS.map((project) => (
+              <div
+                key={project.title}
+                className="flex flex-col rounded-lg border border-gray-200 p-5 dark:border-gray-700"
+              >
+                <h3 className="mb-2 font-bold text-gray-900 dark:text-gray-100">
+                  {project.title}
+                </h3>
+                <p className="mb-3 grow text-sm text-gray-500 dark:text-gray-400">
+                  {project.description}
+                </p>
+                {project.blogSlug && (
+                  <Link
+                    href={`/blog/${project.blogSlug}`}
+                    className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                  >
+                    Read post &rarr;
+                  </Link>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end pb-4 text-base leading-6 font-medium">
+            <Link
+              href="/projects"
+              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            >
+              All projects &rarr;
+            </Link>
+          </div>
+        </SectionContainer>
         <SectionContainer>
           <div className="divide-y divide-gray-200 dark:divide-gray-700" />
           <div className="space-y-2 pt-6 pb-8 md:space-y-5">

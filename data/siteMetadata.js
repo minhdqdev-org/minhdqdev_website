@@ -3,7 +3,7 @@ const siteMetadata = {
   title: 'minhdq.dev',
   author: 'Dang Quang Minh',
   headerTitle: 'minhdq.dev',
-  description: 'Personal blog and portfolio by Dang Quang Minh.',
+  description: '“Luck is what happens when preparation meets opportunity.” ― Seneca',
   language: 'en-us',
   theme: 'dark', // system, dark or light
   siteUrl: 'https://minhdq.dev',
