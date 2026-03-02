@@ -24,6 +24,12 @@ const skills = [
 
 const projects = [
   {
+    title: "TodoPro",
+    description: "A full-featured task management system with CLI, web, mobile, and backend components. Features end-to-end encryption, Focus mode (Pomodoro), natural language input, voice-to-tasks (Ramble), and geo-fencing contexts.",
+    techStack: "Python, FastAPI, React, Flutter, PostgreSQL, Kubernetes",
+    blogSlug: "todopro",
+  },
+  {
     title: "ContentBid",
     description: "Designed and implemented Solidity smart contracts for this content marketplace.",
     techStack: "Solidity",
