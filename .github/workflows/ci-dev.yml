@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  HARBOR_REGISTRY: harbor.minhdq.dev
+  HARBOR_REGISTRY: harbor.internal.minhdq.dev
   HARBOR_PROJECT: minhdqdev
   IMAGE_NAME: minhdqdev-website
   DOCKER_CLIENT_TIMEOUT: '240'
