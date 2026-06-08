@@ -16,6 +16,7 @@ env:
   DOCKER_CLIENT_TIMEOUT: '240'
   COMPOSE_HTTP_TIMEOUT: '240'
   BUILD_NUMBER: ${{ github.run_number }}
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build-and-push:
@@ -99,30 +100,30 @@ jobs:
           GH_TOKEN: ${{ secrets.ARGOCD_CONFIG_REPO_TOKEN }}
         run: |
           set -euo pipefail
-          
+
           # Clone ArgoCD config repo
           git clone https://x-access-token:${GH_TOKEN}@github.com/minhdqdev-org/minhdqdev-argocd-config.git /tmp/argocd-config
           cd /tmp/argocd-config
-          
+
           # Configure git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           # Update kustomization.yaml with new image tag
           KUSTOMIZATION_FILE="environments/uat/minhdqdev-website/kustomization.yaml"
-          
+
           if [ ! -f "$KUSTOMIZATION_FILE" ]; then
             echo "ERROR: $KUSTOMIZATION_FILE not found" >&2
             exit 1
           fi
-          
+
           # Update the image tag using yq or sed
           if command -v yq &> /dev/null; then
             yq eval ".images[0].newTag = \"develop-${{ env.BUILD_NUMBER }}\"" -i "$KUSTOMIZATION_FILE"
           else
             sed -i "s|newTag:.*|newTag: develop-${{ env.BUILD_NUMBER }}|" "$KUSTOMIZATION_FILE"
           fi
-          
+
           # Commit and push if there are changes
           if git diff --quiet "$KUSTOMIZATION_FILE"; then
             echo "No changes to commit"
@@ -132,7 +133,7 @@ jobs:
             git push origin main
             echo "Updated $KUSTOMIZATION_FILE with tag develop-${{ env.BUILD_NUMBER }}"
           fi
-          
+
           # Cleanup
           cd /
           rm -rf /tmp/argocd-config
