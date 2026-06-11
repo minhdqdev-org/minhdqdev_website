@@ -1,0 +1,11 @@
+name: CI — rc/*
+
+on:
+  push:
+    branches: [rc/**]
+
+jobs:
+  ci:
+    uses: minhdqdev-org/github-actions-workflows/.github/workflows/ci.yml@main
+    with:
+      tag_types: rc_version
