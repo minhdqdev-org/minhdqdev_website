@@ -1,9 +1,0 @@
-name: CI — main
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  ci:
-    uses: minhdqdev-org/github-actions-workflows/.github/workflows/ci-main.yml@main

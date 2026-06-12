@@ -1,9 +1,0 @@
-name: CI — rc/*
-
-on:
-  push:
-    branches: [rc/**]
-
-jobs:
-  ci:
-    uses: minhdqdev-org/github-actions-workflows/.github/workflows/ci-rc.yml@main

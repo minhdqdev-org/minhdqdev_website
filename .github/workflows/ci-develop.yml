@@ -1,9 +1,0 @@
-name: CI — develop
-
-on:
-  push:
-    branches: [develop]
-
-jobs:
-  ci:
-    uses: minhdqdev-org/github-actions-workflows/.github/workflows/ci-develop.yml@main
