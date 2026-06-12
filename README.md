@@ -1,5 +1,7 @@
 <h1 align="center">minhdq.dev 🙉🖥️</h1>
 
+[![CI](https://github.com/minhdqdev-org/minhdqdev_website/actions/workflows/ci.yml/badge.svg)](https://github.com/minhdqdev-org/minhdqdev_website/actions/workflows/ci.yml)
+
 <div align="center">
 
 [![Made in Vietnam](https://raw.githubusercontent.com/webuild-community/badge/master/svg/made-modern.svg)](https://minhdq.dev)
