@@ -1,7 +1,8 @@
 ---
 title: "How I Made My To-do List App Feel Instant — Even Offline"
+date: '2026-07-26'
+draft: false
 author: minhdqdev
-updated_at: 2026-07-24T18:10:48+07:00
 tags: [offline-first, local-first, indexeddb, react, django, cli, product]
 ---
 
