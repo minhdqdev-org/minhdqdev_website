@@ -7,7 +7,7 @@ tags:
 - yearly
 summary: Đến hẹn lại lên, như mọi năm, mình đều có thói quen viết note nhìn lại một
   năm đã qua để xem là mình đã làm được gì
-draft: false
+draft: true
 authors:
 - Dang Quang Minh
 ---
