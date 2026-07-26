@@ -1,0 +1,115 @@
+# Task runner for minhdq.dev (Next.js 15 + Contentlayer2 + Tailwind 4).
+# Host-running analysis tasks are wrapped in scripts/sandbox (bwrap): rw to $PWD only, no network.
+# Tasks that must reach the network (npm, next build → next/font/google, dev server) are not sandboxed.
+
+[tools]
+node = "24"
+
+[env]
+APP_NAME = "minhdqdev_website"
+
+# ── Command shortcuts — change here, all tasks follow ─────────
+SANDBOX = "scripts/sandbox"
+BIN     = "node_modules/.bin"
+
+# Contentlayer resolves content paths from INIT_CWD; package.json sets it via cross-env,
+# tasks that call binaries directly rely on this.
+INIT_CWD = "{{config_root}}"
+NEXT_TELEMETRY_DISABLED = "1"
+
+# Dirs covered by `npm run lint` — keep in sync with package.json
+LINT_DIRS = "app components lib layouts scripts"
+
+# ── Dependencies (not sandboxed — need the registry) ──────────
+
+[tasks.install]
+description = "Install dependencies from the lockfile"
+run = "npm ci"
+
+[tasks."deps:update"]
+description = "Update dependencies within semver ranges"
+run = "npm update"
+
+[tasks."deps:audit"]
+description = "Audit dependencies for known vulnerabilities"
+run = "npm audit --audit-level=high"
+
+# ── Code quality (sandboxed) ──────────────────────────────────
+
+[tasks.lint]
+description = "Run ESLint over app/components/lib/layouts/scripts (sandboxed)"
+run = "$SANDBOX $BIN/eslint $LINT_DIRS"
+
+[tasks."lint:fix"]
+description = "Run ESLint with autofix (sandboxed)"
+run = "$SANDBOX $BIN/eslint --fix $LINT_DIRS"
+
+[tasks.fmt]
+description = "Format the repo with Prettier (sandboxed)"
+run = "$SANDBOX $BIN/prettier --write ."
+
+[tasks."fmt:check"]
+description = "Check formatting, no writes — CI-safe (sandboxed)"
+run = "$SANDBOX $BIN/prettier --check ."
+
+[tasks.typecheck]
+description = "TypeScript type check — needs .contentlayer/generated (sandboxed)"
+depends = ["content:build"]
+run = "$SANDBOX $BIN/tsc --noEmit"
+
+[tasks.check]
+description = "All quality gates — run before merging"
+depends = ["fmt:check", "lint", "typecheck"]
+run = ""
+
+# ── Content pipeline ──────────────────────────────────────────
+
+[tasks."content:build"]
+description = "Generate .contentlayer types from data/blog and data/authors (sandboxed)"
+run = "$SANDBOX $BIN/contentlayer2 build"
+
+[tasks.rss]
+description = "Regenerate feed.xml and per-tag feeds without a full build (sandboxed)"
+depends = ["content:build"]
+# rss.mjs only exports the generator — postbuild.mjs is what invokes it.
+env = { NODE_OPTIONS = "--experimental-json-modules" }
+run = "$SANDBOX node scripts/postbuild.mjs"
+
+# ── Dev / build ───────────────────────────────────────────────
+
+[tasks.dev]
+description = "Start the Next.js dev server on :3000 (not sandboxed — needs network + browser)"
+run = "npm run dev"
+
+[tasks.build]
+description = "Full production build: Contentlayer + next build + RSS (not sandboxed — next/font/google fetches at build time)"
+run = "npm run build"
+
+[tasks."build:standalone"]
+description = "Production build in standalone output mode — what the Dockerfile runs"
+env = { STANDALONE = "1", NODE_ENV = "production" }
+run = "npm run build"
+
+[tasks."build:export"]
+description = "Static export build; RSS output switches to out/"
+env = { EXPORT = "1" }
+run = "npm run build"
+
+[tasks.start]
+description = "Serve the production build on :3000 (run build first)"
+run = "npm run start"
+
+[tasks.analyze]
+description = "Build with the bundle analyzer enabled"
+run = "npm run analyze"
+
+# ── Housekeeping ──────────────────────────────────────────────
+
+[tasks.clean]
+description = "Remove build artifacts (.next, .contentlayer, out, tsbuildinfo)"
+run = "rm -rf .next .contentlayer out tsconfig.tsbuildinfo"
+
+[tasks."clean:deps"]
+description = "Remove node_modules as well as build artifacts"
+depends = ["clean"]
+run = "rm -rf node_modules"

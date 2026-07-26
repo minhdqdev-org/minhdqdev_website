@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Run a command inside a bubblewrap sandbox.
+# Grants: rw to $PWD, ro to system dirs and tool caches.
+# Denies: all network, home dir writes, writes outside $PWD.
+
+set -euo pipefail
+
+if ! command -v bwrap &>/dev/null; then
+  echo "bwrap not found. Install: apt install bubblewrap  OR  brew install bubblewrap" >&2
+  exit 1
+fi
+
+ARGS=(
+  # System dirs — read-only
+  --ro-bind /usr /usr
+  --ro-bind-try /lib /lib
+  --ro-bind-try /lib64 /lib64
+  --ro-bind-try /lib32 /lib32
+  --ro-bind-try /bin /bin
+  --ro-bind-try /sbin /sbin
+  --ro-bind /etc /etc       # needed for hostname, user/group resolution
+
+  # Kernel interfaces
+  --proc /proc
+  --dev /dev
+
+  # Writable scratch space
+  --tmpfs /tmp
+  --tmpfs /run
+
+  # Project — read-write (linters and compilers write artifacts here)
+  --bind "$PWD" "$PWD"
+  --chdir "$PWD"
+
+  # Network: blocked
+  --unshare-net
+
+  # Kill sandbox if parent exits
+  --die-with-parent
+)
+
+# Tool caches — read-only so tools don't re-download on every run
+[[ -d "${HOME}/.cache"           ]] && ARGS+=(--ro-bind "${HOME}/.cache"           "${HOME}/.cache")
+[[ -d "${HOME}/.local/share"     ]] && ARGS+=(--ro-bind "${HOME}/.local/share"     "${HOME}/.local/share")
+[[ -d "${HOME}/go/pkg/mod"       ]] && ARGS+=(--ro-bind "${HOME}/go/pkg/mod"       "${HOME}/go/pkg/mod")
+[[ -d "${HOME}/.cargo/registry"  ]] && ARGS+=(--ro-bind "${HOME}/.cargo/registry"  "${HOME}/.cargo/registry")
+[[ -d "${HOME}/.cargo/git"       ]] && ARGS+=(--ro-bind "${HOME}/.cargo/git"       "${HOME}/.cargo/git")
+[[ -f "${HOME}/.npmrc"           ]] && ARGS+=(--ro-bind "${HOME}/.npmrc"           "${HOME}/.npmrc")
+[[ -f "${HOME}/.gitconfig"       ]] && ARGS+=(--ro-bind "${HOME}/.gitconfig"       "${HOME}/.gitconfig")
+
+exec bwrap "${ARGS[@]}" -- "$@"
