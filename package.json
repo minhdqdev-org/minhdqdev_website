@@ -8,7 +8,8 @@
     "build": "cross-env INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
-    "lint": "next lint --dir app --dir components --dir lib --dir layouts --dir scripts"
+    "lint": "next lint --dir app --dir components --dir lib --dir layouts --dir scripts",
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@headlessui/react": "2.2.0",
@@ -64,6 +65,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.0",
     "globals": "^15.12.0",
+    "lefthook": "^2.1.14",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "typescript": "^5.1.3"

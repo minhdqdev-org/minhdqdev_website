@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { motion } from 'motion/react'
 import Link from '@/components/Link'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
@@ -32,7 +33,12 @@ export default function Home({ posts }) {
           >
             <SectionContainer>
               <div className="py-10 md:flex md:min-h-[calc(100vh-140px)] md:items-center md:py-10">
-                <div className="space-y-4 md:w-1/2 md:space-y-4 md:pr-8">
+                <motion.div
+                  className="space-y-4 md:w-1/2 md:space-y-4 md:pr-8"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                >
                   <p className="text-4xl font-semibold text-white">Hello, stranger</p>
                   <div className="text-base leading-7 text-gray-200 md:text-lg md:leading-8 dark:text-gray-300">
                     <p>I'm Dang Quang Minh - a passionate Software Engineer in Vietnam</p>
@@ -55,10 +61,15 @@ export default function Home({ posts }) {
                       {/* <Twemoji emoji="clinking-beer-mugs" /> */}
                     </p>
                   </div>
-                </div>
-              <div className="hidden md:block md:w-1/2 md:pl-8">
-                <HeroImage />
-              </div>
+                </motion.div>
+                <motion.div
+                  className="hidden md:block md:w-1/2 md:pl-8"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut', delay: 0.15 }}
+                >
+                  <HeroImage />
+                </motion.div>
               </div>
             </SectionContainer>
             <div className="absolute right-0 bottom-0 left-0 h-32 bg-gradient-to-t from-white to-transparent dark:from-gray-950" />
@@ -77,16 +88,14 @@ export default function Home({ posts }) {
                 key={project.title}
                 className="flex flex-col rounded-lg border border-gray-200 p-5 dark:border-gray-700"
               >
-                <h3 className="mb-2 font-bold text-gray-900 dark:text-gray-100">
-                  {project.title}
-                </h3>
+                <h3 className="mb-2 font-bold text-gray-900 dark:text-gray-100">{project.title}</h3>
                 <p className="mb-3 grow text-sm text-gray-500 dark:text-gray-400">
                   {project.description}
                 </p>
                 {project.blogSlug && (
                   <Link
                     href={`/blog/${project.blogSlug}`}
-                    className="text-sm font-medium text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+                    className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400 text-sm font-medium"
                   >
                     Read post &rarr;
                   </Link>

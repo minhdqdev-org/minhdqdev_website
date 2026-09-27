@@ -7,8 +7,11 @@
 /* Core theme configuration */
 @theme {
   /* Font families */
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Segoe UI Variable Text',
+    'Segoe UI Variable', 'Segoe UI', system-ui, ui-sans-serif, Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, 'Roboto Mono', monospace;
 
   /* Colors */
   /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
@@ -176,11 +179,11 @@ input:-webkit-autofill:focus {
 
 /* Diagram styles */
 .mermaid {
-  @apply flex justify-center items-center overflow-x-auto;
+  @apply flex items-center justify-center overflow-x-auto;
 }
 
 .mermaid svg {
-  @apply max-w-full h-auto;
+  @apply h-auto max-w-full;
 }
 
 .plantuml-diagram {
