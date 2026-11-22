@@ -3,7 +3,7 @@ title: 'Building an agent-friendly Obsidian vault: vectorless RAG, a forked plug
 date: '2026-11-22'
 summary: 'How I turned a 1,950-note Obsidian vault into something an AI agent can navigate without embeddings: a forked MCP plugin with Vietnamese-aware BM25 search, a deny-list, navigation tools, and a weekend of vault hygiene that now maintains itself.'
 tags: [obsidian, search, architecture, ai-agents, mcp]
-draft: true
+draft: false
 ---
 
 ## 1. Context: a second brain that nobody else could read
