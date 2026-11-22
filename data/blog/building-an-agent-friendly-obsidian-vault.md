@@ -3,6 +3,7 @@ title: 'Building an agent-friendly Obsidian vault: vectorless RAG, a forked plug
 date: '2026-11-22'
 summary: 'How I turned a 1,950-note Obsidian vault into something an AI agent can navigate without embeddings: a forked MCP plugin with Vietnamese-aware BM25 search, a deny-list, navigation tools, and a weekend of vault hygiene that now maintains itself.'
 tags: [obsidian, search, architecture, ai-agents, mcp]
+lastmod: '2026-11-22'
 draft: false
 ---
 
@@ -64,7 +65,7 @@ My first plan was an extension: the plugin exposes an API (`addMcpTool`) so othe
 
 So I forked it: [minhdqdev/minhdq-local-rest-api](https://github.com/minhdqdev/minhdq-local-rest-api). The first version kept the upstream plugin `id`, and I caught that before shipping it. Obsidian identifies a plugin by its `id`, so one click on "Update" in the community plugins screen would silently replace my fork with upstream, taking the deny-list with it. The fork now ships as `minhdq-local-rest-api`, versioned `5.5.2-minhdq.N`. Upstream updates show up as upstream updates and never touch it.
 
-The whole fork comes to 7 commits, 34 files changed and about 2,600 lines added, with 1,439 tests passing.
+The whole fork comes to 8 commits, 34 files changed and about 3,300 lines added, with 1,450 tests passing.
 
 ### 3.2 A deny-list that actually denies
 
@@ -158,20 +159,25 @@ The index lives in memory inside Obsidian. Before each search it compares every 
 
 ### 3.4 Tools shaped for agents, not for humans
 
-The upstream plugin ships 20 low-level tools (list, read, patch, search…). They're complete, but they're shaped like a filesystem API. I added tools shaped like the questions an agent actually asks:
+The upstream plugin ships about 20 low-level tools (list, read, patch, search…). They're complete, but they're shaped like a filesystem API. I added tools shaped like the questions an agent actually asks. The last three in the table came out of the agent's own review in section 3.7:
 
 | Tool                      | What it does                                                                                                                                   | Replaces                        |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
 | `vault_tree`              | Folder → notes, each with its one-line description; depth and size limits; hides images                                                        | Repeated `vault_list`           |
 | `vault_read_many`         | Several notes in one call, truncated per file, per-file errors                                                                                 | N × `vault_read`                |
 | `vault_neighbors`         | Links and backlinks, 1–2 hops, each with a description                                                                                         | Reading notes just to see links |
-| `search_simple`           | The BM25F engine above, plus `path` and `tags` filters, heading paths on matches                                                               | Obsidian's fuzzy search         |
+| `search_simple`           | The BM25F engine above, plus `path`/`tags` filters, `mode: all \| phrase`, `compact` output, heading paths on matches                          | Obsidian's fuzzy search         |
 | `recent_changes`          | Notes changed since `7d`, `24h` or an ISO date                                                                                                 | Nothing                         |
 | `vault_lint`              | Report on broken links, orphans, stubs, missing descriptions, unreviewed AI descriptions, hoá/hóa duplicates, tag variants, broken frontmatter | Manual audits                   |
 | `frontmatter_update_many` | Set or unset frontmatter on many notes; **dry run by default**                                                                                 | N × `vault_patch`               |
 | `tag_rename`              | Rename a tag in frontmatter and inline, nested tags too, skipping code blocks; **dry run by default**                                          | Find and replace                |
+| `note_find`               | "Does a note called X exist?" Matches titles and aliases only, graded `exact` / `folded` / `contains` / `similar`                              | Guessing from search results    |
+| `search_related`          | Notes sharing the most distinctive words with a note or a text, flagged if already linked                                                      | Hand-picked keyword searches    |
+| `vault_batch`             | Up to 50 write/append/patch operations in order, each with its own `ifMatch`; stops at the first failure                                       | One call per write              |
 
 In my experience the design rule that mattered most is **every bulk write defaults to a dry run**. An agent that can rewrite 100 notes in one call is great right up until the moment it's wrong. A dry run shows the before and after for each note, and my agent rules say: if more than ~20 notes change, show me the dry run and wait for a yes.
+
+A few existing tools also got smaller upgrades. `vault_write` takes frontmatter as a JSON object and writes the YAML itself, so agents stop hand-escaping quotes. `tag_list` takes `prefix`, `query`, `minCount` and `limit`, because the vault has hundreds of one-off tags. And `vault_lint` accepts the path of a single note, so an agent can check the note it just wrote.
 
 ### 3.5 Vault hygiene: making the metadata layer real
 
@@ -227,6 +233,29 @@ flowchart LR
   Agent -->|one line per change| Logs
 ```
 
+### 3.7 Letting the agent review its own tools
+
+Two days of building tools for agents, and I had never asked the agent what it actually needed. So after an ordinary task, I asked it.
+
+The task was ingesting two sources: Tencent's HY-World 2.0 (a model that generates 3D worlds) and NVIDIA's SimReady Central (a search over 3D simulation assets). The `vault-ingest` skill does the usual sequence: check for duplicates, save each source, distill it, link it into related notes, log it. It finished. Then I asked: "Do you need more or better tools to work with the vault?"
+
+The answer was a ranked list of six, and every item came from friction it had just hit:
+
+1. **Dedupe by exact name.** `search_simple` scores words independently. Checking whether "HY-World 2.0" existed returned "Software 2.0" and "OAuth 2.0". Checking "SimReady Central" returned a note about "central server". It said it couldn't safely conclude "no such note" from that.
+2. **Compact output.** By default each hit came back with up to ten matches plus context, which costs a lot of tokens when all it needs is to choose which notes to open.
+3. **Related-note search.** It found the two right notes to link (Physical AI and my Robotics Infra Roadmap) only because it happened to guess "Isaac Sim" as a query. "world model 3D Gaussian Splatting" found nothing useful.
+4. **Filters on `tag_list`.** More than 500 tags, most of them used once.
+5. **Frontmatter as an object.** Hand-writing YAML inside a `vault_write` string breaks on quotes.
+6. **Batched writes.** One ingest took a write per source, a patch per related note and an append for the log.
+
+It added one more thing it couldn't do: run `vault_lint` on just the two new notes.
+
+All of these were cheap to build because the index already existed. `note_find` compares names using the same accent and fold keys as search, plus light plural folding, so "world model" matches "World models". The `mode: phrase` filter reuses the bigram postings the phrase boost already kept. `search_related` is a lexical "more like this": it takes the note's text (title words counted three times), ranks words by tf-idf against the vault, and runs them as one loose query with a softer coverage penalty. Five of the six requests, plus single-note lint, shipped the same day as `5.5.2-minhdq.5`.
+
+The one request I didn't fully build was the semantic version of item 3. Embeddings might have rescued the Gaussian Splatting query, but I've already decided that question gets settled by a month of search-miss data, not by one anecdote. The agent's own suggestion pointed at the same scheduled review.
+
+The lesson I'd generalise: **the agent is the user of these tools, so ask it.** Its feedback was specific, ranked, and backed by evidence from the session, which is more than most human bug reports manage. The same loop now runs inside the workflow: whenever a search misses, the agent writes a line in the misses log.
+
 ## 4. Failure stories and gotchas
 
 **The fork that would have un-forked itself.** Covered above, and worth repeating: if you fork an Obsidian plugin, change the `id` in `manifest.json` on day one. Same `id`, same plugin, as far as Obsidian is concerned.
@@ -252,6 +281,8 @@ gh repo set-default "$FULL" >/dev/null
 
 **Heuristics are suggestions, not decisions.** The first pass of the stub review classified notes with regexes, and the regexes were wrong in instructive ways. Stripping template boilerplate also ate real content. "Live Comment System Design" was flagged as a duplicate of "System Design". "Idempotency" was flagged as a duplicate of "Idempotency API". The agent caught these on a second pass before writing the review, which is exactly why the stub review is a checklist I approve, not a script that runs.
 
+**A "filler word" filter that ate the important words.** The first `search_related` dropped any word that appeared in more than a fifth of the vault. On my real vault that's sensible: "là", "the", "của". On a five-note test fixture, though, "isaac" appeared in three notes and got thrown out as filler, which left "tencent" and "blender" as the most distinctive terms. Worse, the source note's own words counted towards how common a word was, so a word that appeared only in the source looked rare and useful. The fix has two parts: never let the filler threshold drop below 5 notes, and leave the source note out when counting. The test caught it before the vault did.
+
 **Clients cache tool lists.** After adding tools, the chat I was working in still saw the original 20. The connector caches the tool list per session, so new tools appear only in a new chat. Expect at least one round of "why isn't it using `vault_tree`?" before you remember.
 
 **Secrets in ordinary notes.** The deny-list protects the paths you declare, not secrets you forgot about. While reviewing stubs, the agent found two old notes with passwords in plain text. A deny-list is no substitute for a password manager.
@@ -260,21 +291,21 @@ gh repo set-default "$FULL" >/dev/null
 
 What changed, in numbers:
 
-| Metric                                | Before                 | After                              |
-| ------------------------------------- | ---------------------- | ---------------------------------- |
-| Notes with a one-line `description`   | ~0                     | 201, plus up to ~100 more per week |
-| Loose images in `Resources/`          | 281                    | 0                                  |
-| Files at the vault root               | ~80                    | 1 (`AGENTS.md`)                    |
-| Duplicate tag spellings               | 10 groups              | 0                                  |
-| Folders an agent can read by accident | All of them            | All except the deny-listed ones    |
-| MCP tools                             | 20 (filesystem-shaped) | 26 (8 added or rewritten)          |
-| `thể chế hóa` → right note            | Not in top 5 of 361    | #1                                 |
+| Metric                                | Before                  | After                              |
+| ------------------------------------- | ----------------------- | ---------------------------------- |
+| Notes with a one-line `description`   | ~0                      | 201, plus up to ~100 more per week |
+| Loose images in `Resources/`          | 281                     | 0                                  |
+| Files at the vault root               | ~80                     | 1 (`AGENTS.md`)                    |
+| Duplicate tag spellings               | 10 groups               | 0                                  |
+| Folders an agent can read by accident | All of them             | All except the deny-listed ones    |
+| MCP tools                             | ~20 (filesystem-shaped) | 10 added, search rewritten         |
+| `thể chế hóa` → right note            | Not in top 5 of 361     | #1                                 |
 
 What still sucks:
 
 - **Obsidian must be running.** Everything goes through a plugin inside the desktop app. If the Mac mini sleeps, the agent's access to the vault dies. A file-based indexer like [qmd](https://github.com/tobi/qmd) wouldn't have this problem. I'm accepting it for now: the Mac mini is always on anyway.
 - **AI-written descriptions need a human pass.** They're accurate but bland, and some notes are too thin to summarise. The `ai_summary: true` flag makes them reviewable, but somebody still has to do the reviewing (me).
-- **BM25 can't do "notes that feel like this one".** A query with no words in common with the note, or an English question about a Vietnamese note, will miss. That's the honest case for embeddings.
+- **BM25 can't do "notes that feel like this one".** `search_related` gets surprisingly far by matching on distinctive vocabulary. But a query with no words in common with the note, or an English question about a Vietnamese note, will still miss. That's the honest case for embeddings.
 
 Which is why the last piece is a measurement, not a feature. Every `search_simple` call now appends one line to a log in the plugin folder, where no API client can read it:
 
